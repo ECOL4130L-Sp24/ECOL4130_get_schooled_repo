@@ -4,4 +4,6 @@ We hypothesize that due to macroinvertebrates’ role as a major food source for
 
 The data we plan to use include macroinvertebrate species count per month, fish species count per month, and general site geographic data such as precipitation, average temperature, and elevation within the time period from January 202 to November 2021. This data was collected from two sites, one in Alabama (AL-DO8-MAYF) and one in California (CA-D17-BIGC), in order to test across very different environments. Data was obtained from the NEON database.
 
-Data main points: Macroinvertebrate species count per month, fish species count per month. Site geographic data; precipitation? Average temperature? Elevation?
+NEON (National Ecological Observatory Network). Fish electrofishing, gill netting, and fyke netting counts (DP1.20107.001), RELEASE-2024. <https://doi.org/10.48443/kb2e-va82>. Dataset accessed from <https://data.neonscience.org/data-products/DP1.20107.001/RELEASE-2024> on February 20, 2024.
+
+NEON (National Ecological Observatory Network). Macroinvertebrate collection (DP1.20120.001), RELEASE-2024. <https://doi.org/10.48443/je35-bc57>. Dataset accessed from <https://data.neonscience.org/data-products/DP1.20120.001/RELEASE-2024> on February 20, 2024.
