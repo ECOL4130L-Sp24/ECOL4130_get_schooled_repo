@@ -1,6 +1,6 @@
 ```{r}
-install.packages("neonUtilities")
-install.packages("here")
+#install.packages("neonUtilities")
+#install.packages("here")
 
 library(tidyverse)
 library(neonUtilities)
@@ -33,5 +33,13 @@ list2env((loadByProduct(dpID = water_fishes,
                         enddate = end_date)),
          .GlobalEnv)
 
+```
+
+```{r}
+variables_20107 %>% 
+  write_csv(here("data", "raw", "variables_20107.csv"))
+
+fsh_bulkCount %>% 
+  write_csv(here("data", "raw", "fsh_bulkCount.csv"))
 ```
 
