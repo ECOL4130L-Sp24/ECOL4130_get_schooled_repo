@@ -1,0 +1,14 @@
+```{r}
+library(tidyverse)
+library(here)
+```
+
+```{r}
+macro_raw <- read_csv(here("data", "raw", "inv_taxonomyProcessed.csv")) 
+str(macro_raw)
+names(macro_raw)
+```
+
+```{r}
+
+```
