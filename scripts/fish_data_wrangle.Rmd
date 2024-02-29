@@ -1,0 +1,28 @@
+```{r}
+# Load the tidyverse package
+library(tidyverse)
+library(here)
+
+```
+
+```{r}
+fish <- read.csv(here("data", "raw", "fsh_perFish.csv"))
+
+str(fish)
+```
+```{r}
+fish_select <- fish %>% 
+  select(taxonID, siteID, scientificName, passStartTime, passEndTime)
+```
+
+```{r}
+fish_by_month <- fish_select %>% 
+  mutate(month = month(passEndTime),
+         year = year(passEndTime)) %>% 
+  distinct(taxonID, .keep_all = TRUE) %>% 
+  group_by(siteID, year, month) %>% 
+  summarize(fish_by_month = unique(n()))
+
+print(fish_by_month) 
+```
+
