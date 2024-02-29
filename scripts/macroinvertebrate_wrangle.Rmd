@@ -10,5 +10,20 @@ names(macro_raw)
 ```
 
 ```{r}
+macro <- macro_raw %>% 
+  select(acceptedTaxonID, collectDate, siteID)
+```
+
+
+```{r}
+ macro_by_month <- macro %>% 
+  mutate(month = month(collectDate),
+         year = year(collectDate)) %>%
+  distinct(acceptedTaxonID, .keep_all = TRUE) %>% 
+  group_by(siteID, year, month) %>% 
+summarize(macro_by_month = unique(n()))
+
+print(macro_by_month)
 
 ```
+
