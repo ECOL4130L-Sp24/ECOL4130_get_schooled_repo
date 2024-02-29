@@ -43,7 +43,7 @@ fsh_bulkCount %>%
   write_csv(here("data", "raw", "fsh_bulkCount.csv"))
 
 fsh_perFish %>%
-  write_csv(here("data", "raw", "fsh_bulkCount.csv"))
+  write_csv(here("data", "raw", "fsh_perFish.csv"))
 ```
 
 ```{r}
