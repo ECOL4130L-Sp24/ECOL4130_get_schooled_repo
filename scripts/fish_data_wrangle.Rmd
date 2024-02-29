@@ -5,3 +5,7 @@ library(here)
 
 ```
 
+```{r}
+fish <- read.csv(here("data", "raw", ""))
+```
+
