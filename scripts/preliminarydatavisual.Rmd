@@ -1,0 +1,32 @@
+```{r}
+install.packages("pacman")
+
+pacman::p_load(tidyverse, here, palmerpenguins, cowplot, viridis)
+```
+
+```{r}
+glimpse(macro_by_month)
+print(macro_by_month)
+```
+```{r}
+macro_by_month <- macro_by_month %>% 
+  mutate(date = make_date(year, month))
+```
+
+```{r}
+ggplot(data = macro_by_month, 
+       mapping = aes(x = date,
+                     y = macro_by_month,
+                     col = siteID)) + 
+  geom_point() 
+```
+
+```{r}
+ggsave(filename = here("output", "macro_plot.png"), 
+       plot = last_plot(), # or replace with plot object name
+       width = 5, height = 3, units = "in",
+       dpi = 300)
+```
+
+
+
