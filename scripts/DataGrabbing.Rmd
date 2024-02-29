@@ -41,6 +41,9 @@ variables_20107 %>%
 
 fsh_bulkCount %>% 
   write_csv(here("data", "raw", "fsh_bulkCount.csv"))
+
+fsh_perFish %>%
+  write_csv(here("data", "raw", "fsh_bulkCount.csv"))
 ```
 
 ```{r}
