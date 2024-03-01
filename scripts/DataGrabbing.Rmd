@@ -7,10 +7,10 @@ library(neonUtilities)
 library(here)
 ```
 ```{r}
-# Ground beetles sampled from pitfall traps
+# Fish sampled
 water_fishes <- "DP1.20107.001"
 
-# Precipitation
+# Macroinvertebrates sampled
 water_macroinvertebrates <- "DP1.20120.001"
 
 # Two selected focal sites
@@ -38,9 +38,6 @@ list2env((loadByProduct(dpID = water_fishes,
 ```{r}
 variables_20107 %>% 
   write_csv(here("data", "raw", "variables_20107.csv"))
-
-fsh_bulkCount %>% 
-  write_csv(here("data", "raw", "fsh_bulkCount.csv"))
 
 fsh_perFish %>%
   write_csv(here("data", "raw", "fsh_perFish.csv"))
