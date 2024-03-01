@@ -26,3 +26,7 @@ fish_by_month <- fish_select %>%
 print(fish_by_month) 
 ```
 
+```{r}
+write_csv(fish_by_month, here("data", "processed", "fish_by_month.csv"))
+```
+
