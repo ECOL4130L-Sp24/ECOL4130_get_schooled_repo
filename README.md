@@ -6,9 +6,9 @@ We hypothesize that due to macroinvertebrates’ role as a major food source for
 
 ## Data
 
-The data we plan to use include macroinvertebrate species count per month, fish species count per month, and general site geographic data such as precipitation, average temperature, and elevation within the time period from January 2022 to November 2021. This data was collected from two sites, one in Alabama (AL-DO8-MAYF) and one in California (CA-D17-BIGC), in order to test across very different environments. Data was obtained from the NEON database.
+The data we plan to use include macroinvertebrate species count per month, fish species count per month, and general site geographic data such as precipitation, average temperature, and elevation of surface water within the time period from January 2022 to November 2021. This data was collected from two sites, one in Alabama (AL-DO8-MAYF) and one in California (CA-D17-BIGC), in order to test across very different environments. Data was obtained from the NEON database.
 
-Although the primary research question focuses around macroinvertebrate and fish species counts, weather data will be used to provide context regarding the various habitats in which these species are found.
+Although the primary research question focuses around macroinvertebrate and fish species counts, weather and elevation data will be used to provide context regarding the various habitats in which these species are found.
 
 ## Data Citations
 
