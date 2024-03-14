@@ -13,6 +13,12 @@ water_fishes <- "DP1.20107.001"
 # Macroinvertebrates sampled
 water_macroinvertebrates <- "DP1.20120.001"
 
+# Temperature Sampled
+site_temperatures <- "DP1.00002.001"
+
+# Precipitation Sampled
+#site_precipitation <- ""
+
 # Two selected focal sites
 my_sites <- c("MAYF", "BIGC")
 
@@ -45,6 +51,22 @@ fsh_perFish %>%
 
 ```{r}
 list2env((loadByProduct(dpID = water_macroinvertebrates, 
+                        site = my_sites, 
+                        include.provisional = TRUE,
+                        startdate = start_date,
+                        enddate = end_date)),
+         .GlobalEnv)
+```
+```{r}
+variables_20120 %>% 
+  write_csv(here("data", "raw", "variables_20120.csv"))
+
+inv_taxonomyProcessed %>% 
+  write_csv(here("data", "raw", "inv_taxonomyProcessed.csv"))
+```
+
+```{r}
+list2env((loadByProduct(dpID = site_temperatures, 
                         site = my_sites, 
                         include.provisional = TRUE,
                         startdate = start_date,
