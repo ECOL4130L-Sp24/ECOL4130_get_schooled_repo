@@ -5,17 +5,29 @@ library(here)
 
 ```
 
+# Create "fish" object.
+
 ```{r}
+
 fish <- read.csv(here("data", "raw", "fsh_perFish.csv"))
 
 str(fish)
 ```
+
+# Select focal data for fish.
+
 ```{r}
+
+
 fish_select <- fish %>% 
   select(taxonID, siteID, scientificName, passStartTime, passEndTime)
 ```
 
+# Separate fish diversity by month from other data.
+
 ```{r}
+
+
 fish_by_month <- fish_select %>% 
   mutate(month = month(passEndTime),
          year = year(passEndTime)) %>% 
@@ -26,7 +38,9 @@ fish_by_month <- fish_select %>%
 print(fish_by_month) 
 ```
 
+# write fish_by_month as a separate .csv
+
 ```{r}
+
 write_csv(fish_by_month, here("data", "processed", "fish_by_month.csv"))
 ```
-
