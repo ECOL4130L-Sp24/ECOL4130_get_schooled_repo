@@ -3,18 +3,20 @@ library(tidyverse)
 library(here)
 ```
 
+## Read macroinvert data.
 ```{r}
 macro_raw <- read_csv(here("data", "raw", "inv_taxonomyProcessed.csv")) 
 str(macro_raw)
 names(macro_raw)
 ```
 
+## Select raw data.
 ```{r}
 macro <- macro_raw %>% 
   select(acceptedTaxonID, collectDate, siteID)
 ```
 
-
+## Separate data to get macroinvertebrate data by month.
 ```{r}
  macro_by_month <- macro %>% 
   mutate(month = month(collectDate),
