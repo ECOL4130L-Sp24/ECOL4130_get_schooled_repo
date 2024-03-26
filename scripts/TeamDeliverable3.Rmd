@@ -91,9 +91,8 @@ fish_select <- fish %>%
 fish_by_month <- fish_select %>% 
   mutate(month = month(passEndTime),
          year = year(passEndTime)) %>% 
-  distinct(taxonID, .keep_all = TRUE) %>% 
   group_by(siteID, year, month) %>% 
-  summarize(fish_by_month = unique(n()))
+  summarize(unique_taxa = n_distinct(taxonID))
 
 print(fish_by_month) 
 
@@ -119,9 +118,8 @@ macro <- macro_raw %>%
  macro_by_month <- macro %>% 
   mutate(month = month(collectDate),
          year = year(collectDate)) %>%
-  distinct(acceptedTaxonID, .keep_all = TRUE) %>% 
   group_by(siteID, year, month) %>% 
-summarize(macro_by_month = unique(n()))
+  summarize(unique_taxa = n_distinct(acceptedTaxonID))
 
 print(macro_by_month)
 
