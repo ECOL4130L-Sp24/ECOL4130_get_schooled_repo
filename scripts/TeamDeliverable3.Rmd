@@ -1,0 +1,128 @@
+# Fish Diversity Correlation to Macroinvertebrate Diversity Over Time
+
+## Authors: Andrea Mascioli, Carmel Serban, Nicole Landry, Matthews Do Carmo Nascimiento
+
+Load necessary packages
+
+```{r}
+library(tidyverse)
+library(here)
+```
+
+Load raw datasets
+
+```{r}
+# Fish sampled
+water_fishes <- "DP1.20107.001"
+
+# Macroinvertebrates sampled
+water_macroinvertebrates <- "DP1.20120.001"
+
+# Temperature Sampled
+site_temperatures <- "DP1.00002.001"
+
+# Precipitation Sampled
+#site_precipitation <- ""
+
+# Two selected focal sites
+my_sites <- c("MAYF", "BIGC")
+
+# Start date (as YYYY-MM)
+start_date <- "2020-01"
+
+# End date (as YYYY-MM)
+end_date <- "2021-11"
+
+list2env((loadByProduct(dpID = water_fishes, 
+                        site = my_sites, 
+                        include.provisional = TRUE,
+                        startdate = start_date,
+                        enddate = end_date)),
+         .GlobalEnv)
+
+variables_20107 %>% 
+  write_csv(here("data", "raw", "variables_20107.csv"))
+
+fsh_perFish %>%
+  write_csv(here("data", "raw", "fsh_perFish.csv"))
+
+list2env((loadByProduct(dpID = water_macroinvertebrates, 
+                        site = my_sites, 
+                        include.provisional = TRUE,
+                        startdate = start_date,
+                        enddate = end_date)),
+         .GlobalEnv)
+
+variables_20120 %>% 
+  write_csv(here("data", "raw", "variables_20120.csv"))
+
+inv_taxonomyProcessed %>% 
+  write_csv(here("data", "raw", "inv_taxonomyProcessed.csv"))
+
+list2env((loadByProduct(dpID = site_temperatures, 
+                        site = my_sites, 
+                        include.provisional = TRUE,
+                        startdate = start_date,
+                        enddate = end_date)),
+         .GlobalEnv)
+
+variables_20120 %>% 
+  write_csv(here("data", "raw", "variables_20120.csv"))
+
+inv_taxonomyProcessed %>% 
+  write_csv(here("data", "raw", "inv_taxonomyProcessed.csv"))
+```
+
+Data wrangling (Selecting fish diversity and macroinvertebrate data)
+
+```{r}
+fish <- read.csv(here("data", "raw", "fsh_perFish.csv"))
+
+str(fish)
+
+## Select focal data for fish.
+
+fish_select <- fish %>% 
+  select(taxonID, siteID, scientificName, passStartTime, passEndTime)
+
+## Separate fish diversity by month from other data.
+
+fish_by_month <- fish_select %>% 
+  mutate(month = month(passEndTime),
+         year = year(passEndTime)) %>% 
+  distinct(taxonID, .keep_all = TRUE) %>% 
+  group_by(siteID, year, month) %>% 
+  summarize(fish_by_month = unique(n()))
+
+print(fish_by_month) 
+
+## write fish_by_month as a separate .csv
+
+write_csv(fish_by_month, here("data", "processed", "fish_by_month.csv"))
+
+# Macroinvertebrate data wrangling:
+
+## Read macroinvertebrate data.
+
+macro_raw <- read_csv(here("data", "raw", "inv_taxonomyProcessed.csv")) 
+str(macro_raw)
+names(macro_raw)
+
+## Select raw data.
+
+macro <- macro_raw %>% 
+  select(acceptedTaxonID, collectDate, siteID)
+
+## Separate data to get macroinvertebrate data by month.
+
+ macro_by_month <- macro %>% 
+  mutate(month = month(collectDate),
+         year = year(collectDate)) %>%
+  distinct(acceptedTaxonID, .keep_all = TRUE) %>% 
+  group_by(siteID, year, month) %>% 
+summarize(macro_by_month = unique(n()))
+
+print(macro_by_month)
+
+```
+
