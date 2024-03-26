@@ -7,6 +7,7 @@ Load necessary packages
 ```{r}
 library(tidyverse)
 library(here)
+library(neonUtilities)
 ```
 
 Load raw datasets
