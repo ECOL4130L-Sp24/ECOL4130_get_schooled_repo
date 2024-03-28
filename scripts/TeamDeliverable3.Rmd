@@ -175,6 +175,7 @@ unique_taxa_aov2_macro <- aov(unique_taxa ~ season + siteID, data = macro_by_sea
 summary(unique_taxa_aov2_macro)
 
 ```
+# The data above from the ANOVA test and Additive models show that the siteID's have a significant correlation among them, while season and season:siteID do not have significant correlation. Essentially, the trend we are seeing with seasons and the fluxuations of species diversity are consistant between sites. The p value for siteID was 7.39x10^-7, and the F value was 71.097. 
 ```{r}
 # FISH ANOVA
 
@@ -187,6 +188,7 @@ unique_taxa_aov2_fish <- aov(unique_taxa ~ season + siteID, data = fish_by_seaso
 
 summary(unique_taxa_aov2_fish)
 ```
+#The ANOVA test and Additive model reflect the same results as the macroinvertebrate data, with siteID proving significant correlation within them. The p value is 4.37x10^-5 and the F value is 63.984. This data informs us that the fluxuations of species diversity are not only consistant between sites, but also across fish species and macroinvertebrate species, regardless of the site location and geography.
 
 
 ```{r}
