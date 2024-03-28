@@ -143,14 +143,18 @@ print(macro_by_season)
 # FISH
 
 fish_by_season <- fish_select %>%
-  mutate(month = month(passStartTime),
+  mutate(taxonID = factor(taxonID),
+         siteID = factor(siteID),
+         month = month(passStartTime),
          year = year(passStartTime),
          siteID = factor(siteID),
          season = factor(ifelse(month %in% c(3,4,5), "spring",
                          ifelse(month %in% c(6,7,8), "summer",
                                 ifelse(month %in% c(9,10,11), "fall", "winter"))))) %>%
   group_by(siteID, season, year, month) %>%
-  summarize(unique_taxa = n_distinct(taxonID))
+  summarize(unique_taxa = n_distinct(taxonID),
+            total_individuals = n())
+
 print(fish_by_season)
 
  
@@ -204,6 +208,8 @@ ggplot(fish_by_season,
            y = unique_taxa,
            fill = siteID)) +
   geom_boxplot() +
+  facet_wrap(. ~ siteID, 
+             scales = "free_y") +
   theme_bw()
 ```
 
