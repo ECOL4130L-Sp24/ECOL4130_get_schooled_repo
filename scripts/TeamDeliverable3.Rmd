@@ -197,9 +197,13 @@ ggplot(macro_by_season,
            y = unique_taxa,
            fill = siteID)) +
   geom_boxplot() +
+  facet_wrap(. ~ siteID, 
+             scales = "free_y") +
   theme_bw()
 
 ```
+NOTE: Y-axes scales differ
+
 ```{r}
 # FISH SITE GRAPH
 
@@ -212,6 +216,6 @@ ggplot(fish_by_season,
              scales = "free_y") +
   theme_bw()
 ```
-
+NOTE: Y-axes scales differ
 
 
