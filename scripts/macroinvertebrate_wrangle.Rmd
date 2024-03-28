@@ -34,9 +34,9 @@ macro_by_month <- macro %>%
   mutate(month = month(collectDate),
          year = year(collectDate),
          siteID = factor(siteID),
-         season = ifelse(month %in% c(3,4,5), "spring",
+         season = factor(ifelse(month %in% c(3,4,5), "spring",
                          ifelse(month %in% c(6,7,8), "summer",
-                                ifelse(month %in% c(9,10,11), "fall", "winter")))) %>%
+                                ifelse(month %in% c(9,10,11), "fall", "winter"))))) %>%
   group_by(siteID, season, year, month) %>%
   summarize(unique_taxa = n_distinct(acceptedTaxonID))
 print(macro_by_month)
@@ -46,10 +46,28 @@ print(macro_by_month)
 #Use an ANOVA test to find correlation between unique species and season for each site
 
 ```{r}
-macros_by_month_MAYF <- macros_by_month %>%
-filter(siteID == “MAYF”)
+#macro_by_month_MAYF <- macro_by_month %>%
+#filter(siteID == "MAYF")
 
-aov(unique_taxa ~ month, data = macro_by_month_MAYF)
+unique_taxa_aov <- aov(unique_taxa ~ season * siteID, data = macro_by_month)
+
+summary(unique_taxa_aov)
+
+# Additive Model
+unique_taxa_aov2 <- aov(unique_taxa ~ season + siteID, data = macro_by_month)
+
+summary(unique_taxa_aov2)
+
+```
+
+```{r}
+
+ggplot(macro_by_month,
+       aes(x = season,
+           y = unique_taxa,
+           fill = siteID)) +
+  geom_boxplot() +
+  theme_bw()
 
 ```
 
