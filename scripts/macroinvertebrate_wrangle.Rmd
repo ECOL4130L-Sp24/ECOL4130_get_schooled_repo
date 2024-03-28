@@ -28,4 +28,28 @@ summarize(macro_by_month = unique(n()))
 print(macro_by_month)
 
 ```
+# Sort by season, not month to get better data feedback
+```{r}
+macro_by_month <- macro %>%
+  mutate(month = month(collectDate),
+         year = year(collectDate),
+         siteID = factor(siteID),
+         season = ifelse(month %in% c(3,4,5), "spring",
+                         ifelse(month %in% c(6,7,8), "summer",
+                                ifelse(month %in% c(9,10,11), "fall", "winter")))) %>%
+  group_by(siteID, season, year, month) %>%
+  summarize(unique_taxa = n_distinct(acceptedTaxonID))
+print(macro_by_month)
+
+ 
+```
+#Use an ANOVA test to find correlation between unique species and season for each site
+
+```{r}
+macros_by_month_MAYF <- macros_by_month %>%
+filter(siteID == “MAYF”)
+
+aov(unique_taxa ~ month, data = macro_by_month_MAYF)
+
+```
 
