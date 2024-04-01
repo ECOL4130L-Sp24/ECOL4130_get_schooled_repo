@@ -19,19 +19,10 @@ fish <- read_csv(here("data", "raw", "fsh_perFish.csv"))
 str(fish)
 
 # Macroinvertebrates
-list2env((loadByProduct(dpID = water_macroinvertebrates, 
-                        site = my_sites, 
-                        include.provisional = TRUE,
-                        startdate = start_date,
-                        enddate = end_date)),
-         .GlobalEnv)
+macro_raw <- read_csv(here("data", "raw", "inv_taxonomyProcessed.csv")) 
+str(macro_raw)
 
-variables_20120 %>% 
-  write_csv(here("data", "raw", "variables_20120.csv"))
-
-inv_taxonomyProcessed %>% 
-  write_csv(here("data", "raw", "inv_taxonomyProcessed.csv"))
-
+# Temperature
 list2env((loadByProduct(dpID = site_temperatures, 
                         site = my_sites, 
                         include.provisional = TRUE,
@@ -50,7 +41,6 @@ inv_taxonomyProcessed %>%
 
 ```{r chunk 3}
 ## Select focal data for fish.
-
 fish_select <- fish %>% 
   select(taxonID, siteID, passStartTime)
 
@@ -60,20 +50,17 @@ fish_by_month <- fish_select %>%
   mutate(month = month(passStartTime),
          year = year(passStartTime)) %>% 
   group_by(siteID, year, month) %>% 
-  summarize(unique_taxa = n_distinct(taxonID))
+  summarize(unique_taxa = n_distinct(taxonID)) %>% 
+  ## write fish_by_month as a separate .csv
+  write_csv(fish_by_month, here("data", "processed", "fish_by_month.csv"))
 
 print(fish_by_month) 
-
-## write fish_by_month as a separate .csv
-
-write_csv(fish_by_month, here("data", "processed", "fish_by_month.csv"))
 
 # Macroinvertebrate data wrangling:
 
 ## Read macroinvertebrate data.
 
-macro_raw <- read_csv(here("data", "raw", "inv_taxonomyProcessed.csv")) 
-str(macro_raw)
+
 names(macro_raw)
 
 ## Select raw data.
