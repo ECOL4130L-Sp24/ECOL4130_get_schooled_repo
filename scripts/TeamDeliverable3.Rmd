@@ -31,21 +31,14 @@ str(fish)
 
 # Macroinvertebrates
 macro_raw <- read_csv(here("data", "raw", "inv_taxonomyProcessed.csv")) 
+
 str(macro_raw)
 
-# Temperature
-list2env((loadByProduct(dpID = site_temperatures, 
-                        site = my_sites, 
-                        include.provisional = TRUE,
-                        startdate = start_date,
-                        enddate = end_date)),
-         .GlobalEnv)
+# Stream temperature
+temp_raw <- read_csv(here("data", "raw", "TSW_30min.csv"))
 
-variables_20120 %>% 
-  write_csv(here("data", "raw", "variables_20120.csv"))
+str(temp_raw)
 
-inv_taxonomyProcessed %>% 
-  write_csv(here("data", "raw", "inv_taxonomyProcessed.csv"))
 ```
 
 ## Data wrangling (Selecting fish diversity and macroinvertebrate data)
