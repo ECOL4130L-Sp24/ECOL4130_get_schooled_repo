@@ -25,105 +25,101 @@ library(neonUtilities)
 
 ```{r chunk 2}
 # Fish sampled
-fish <- read_csv(here("data", "raw", "fsh_perFish.csv"))
-
-str(fish)
+fish_raw <- read_csv(here("data", "raw", "fsh_perFish.csv"))
 
 # Macroinvertebrates
 macro_raw <- read_csv(here("data", "raw", "inv_taxonomyProcessed.csv")) 
 
-str(macro_raw)
-
 # Stream temperature
 temp_raw <- read_csv(here("data", "raw", "TSW_30min.csv"))
 
-str(temp_raw)
+```
+
+# Data wrangling (Selecting fish diversity and macroinvertebrate data)
+
+## Fish diversity
+```{r chunk 3}
+
+## Select focal variables for fish
+fish_select <- fish_raw %>% 
+  mutate(taxonID = factor(taxonID),
+         siteID = factor(siteID),
+         sample_month = as_date(floor_date(passStartTime, "month")),
+         month = month(sample_month),
+         year = year(sample_month),
+         season = factor(ifelse(month %in% c(3,4,5), "spring",
+                         ifelse(month %in% c(6,7,8), "summer",
+                                ifelse(month %in% c(9,10,11), "fall", "winter"))))) %>% 
+  #filter(season %in% c("spring", "fall")) %>% 
+  select(siteID, sample_month, month, year, season, taxonID, scientificName, fishWeight)
 
 ```
 
-## Data wrangling (Selecting fish diversity and macroinvertebrate data)
-
-```{r chunk 3}
-## Select focal data for fish.
-fish_select <- fish %>% 
-  select(taxonID, siteID, passStartTime)
-
-## Separate fish diversity by month from other data.
-
+Summarize fish diversity by month/year and season
+```{r}
 fish_by_month <- fish_select %>% 
-  mutate(month = month(passStartTime),
-         year = year(passStartTime)) %>% 
-  group_by(siteID, year, month) %>% 
-  summarize(unique_taxa = n_distinct(taxonID)) %>% 
-  ## write fish_by_month as a separate .csv
-  write_csv(fish_by_month, here("data", "processed", "fish_by_month.csv"))
+  group_by(siteID, sample_month) %>% 
+  summarize(unique_taxa = n_distinct(taxonID),
+            total_individuals = n(),
+            total_biomass = sum(fishWeight, na.rm = TRUE)) %>% 
+  write_csv(., here("data", "processed", "fish_by_month.csv"))
 
 print(fish_by_month) 
 
-# Macroinvertebrate data wrangling:
-
-## Read macroinvertebrate data.
-
-
-names(macro_raw)
-
-## Select raw data.
-
-macro_select <- macro_raw %>% 
-  select(acceptedTaxonID, collectDate, siteID)
-
-## Separate data to get macroinvertebrate data by month.
-
- macro_by_month <- macro_select %>% 
-  mutate(month = month(collectDate),
-         year = year(collectDate)) %>%
-  group_by(siteID, year, month) %>% 
-  summarize(unique_taxa = n_distinct(acceptedTaxonID))
-
-print(macro_by_month)
-
-```
-
-## Sorting by season
-```{r chunk 4}
-# MACROINVERTS
-
-macro_by_season <- macro_select %>%
-  mutate(month = month(collectDate),
-         year = year(collectDate),
-         siteID = factor(siteID),
-         season = factor(ifelse(month %in% c(3,4,5), "spring",
-                         ifelse(month %in% c(6,7,8), "summer",
-                                ifelse(month %in% c(9,10,11), "fall", "winter"))))) %>%
-  group_by(siteID, season, year, month) %>%
-  summarize(unique_taxa = n_distinct(acceptedTaxonID))
-print(macro_by_season)
-
-# FISH
-
+## Summarize fish diversity by season 
 fish_by_season <- fish_select %>%
-  mutate(taxonID = factor(taxonID),
-         siteID = factor(siteID),
-         month = month(passStartTime),
-         year = year(passStartTime),
-         siteID = factor(siteID),
-         season = factor(ifelse(month %in% c(3,4,5), "spring",
-                         ifelse(month %in% c(6,7,8), "summer",
-                                ifelse(month %in% c(9,10,11), "fall", "winter"))))) %>%
-  group_by(siteID, season, year, month) %>%
+  group_by(siteID, season, year) %>%
   summarize(unique_taxa = n_distinct(taxonID),
-            total_individuals = n())
+            total_individuals = n(),
+            total_biomass = sum(fishWeight, na.rm = TRUE)) %>% 
+  write_csv(., here("data", "processed", "fish_by_season.csv"))
 
 print(fish_by_season)
 
- 
 ```
-## Use an ANOVA test to find correlation between unique species and season for each site
 
+## Macroinvertebrates
+```{r}
+
+## Select focal variables
+macro_select <- macro_raw %>% 
+  mutate(taxonID = factor(acceptedTaxonID),
+         siteID = factor(siteID),
+         sample_month = as_date(floor_date(collectDate, "month")),
+         month = month(sample_month),
+         year = year(sample_month),
+         season = factor(ifelse(month %in% c(3,4,5), "spring",
+                         ifelse(month %in% c(6,7,8), "summer",
+                                ifelse(month %in% c(9,10,11), "fall", "winter"))))) %>% 
+  #filter(season %in% c("spring", "fall")) %>% 
+  select(siteID, sample_month, month, year, season, genus, taxonID, scientificName, sizeClass, sizeCategory, individualCount, estimatedTotalCount)
+
+## Separate data to get macroinvertebrate data by month.
+macro_by_month <- macro_select %>% 
+  group_by(siteID, sample_month) %>% 
+  summarize(unique_taxa = n_distinct(taxonID),
+            total_individuals = sum(estimatedTotalCount)) %>% 
+  write_csv(., here("data", "processed", "macro_by_month.csv"))
+
+print(macro_by_month)
+
+macro_by_season <- macro_select %>%
+  group_by(siteID, season, year) %>%
+  summarize(unique_taxa = n_distinct(taxonID),
+            total_individuals = sum(estimatedTotalCount)) %>% 
+  write_csv(., here("data", "processed", "macro_by_season.csv"))
+
+print(macro_by_season)
+
+```
+
+# Data analysis
+
+## Macroinvertebrate ANOVA
+Use an ANOVA test to find correlation between unique species and season for each site
 ```{r chunk 5}
 
-# MACRO ANOVA
-
+# Set up model
 unique_taxa_aov_macro <- aov(unique_taxa ~ season * siteID, data = macro_by_season)
 
 summary(unique_taxa_aov_macro)
@@ -143,8 +139,9 @@ plot(unique_taxa_aov2_macro, which = 1:3)
 
 ```
 The data above from the ANOVA test and Additive models show that the siteID's have a significant correlation among them, while season and season:siteID do not have significant correlation. Essentially, the trend we are seeing with seasons and the fluxuations of species diversity are consistant between sites. The p value for siteID was 7.39x10^-7, and the F value was 71.097.Relationship is non linear as displayed by the residuals vs fitted plot, Residuals are approximately normally distributed as seen in the q-q residuals plot, and the there is not a constant variation of residuals as displayed in the scale-location plot.
+
+## Fish ANOVA
 ```{r chunk 5}
-# FISH ANOVA
 
 unique_taxa_aov_fish <- aov(unique_taxa ~ season * siteID, data = fish_by_season)
 
@@ -178,6 +175,7 @@ ggplot(macro_by_season,
 
 ```
 The box plot above shows the data for the unique macroinvertebrate species collected between both sites MAYF and BIGC. The y axis shows the number of unique taxa collected while the x axis shows the season. The blue bars show MAYF data while the orange/red bars show data for BIGC. The overall trend for both sites looks relatively similar, however the MAYF site does show a considerable less amount of unique macroinvertebrates collected.
+
 ```{r chunk 6}
 # FISH SITE GRAPH
 
@@ -186,6 +184,16 @@ ggplot(fish_by_season,
            y = unique_taxa,
            fill = siteID)) +
   geom_boxplot() +
+  facet_wrap(. ~ siteID, 
+             scales = "free_y") +
+  theme_bw()
+
+# Unique taxa over time at each site
+ggplot(fish_by_month,
+       aes(x = sample_month,
+           y = unique_taxa,
+           col = siteID)) +
+  geom_line() +
   facet_wrap(. ~ siteID, 
              scales = "free_y") +
   theme_bw()
