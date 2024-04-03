@@ -90,10 +90,9 @@ list2env((loadByProduct(dpID = site_temperatures,
          .GlobalEnv)
 ```
 ```{r}
-variables_20120 %>% 
-  write_csv(here("data", "raw", "variables_20120.csv"))
+variables_00002 %>% 
+  write_csv(here("data", "raw", "variables_00002.csv"))
 
-inv_taxonomyProcessed %>% 
-  write_csv(here("data", "raw", "inv_taxonomyProcessed.csv"))
+SAAT_30min %>% 
+  write_csv(here("data", "raw", "SAAT_30min.csv"))
 ```
-
