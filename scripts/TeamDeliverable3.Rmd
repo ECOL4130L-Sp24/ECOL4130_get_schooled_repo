@@ -1,3 +1,14 @@
+---
+title: "Consolidated data wrangling & analysis"
+author: "Carmel, Mathews, Andrea, Nicole"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 2
+---
+
 # Fish Diversity Correlation to Macroinvertebrate Diversity Over Time
 
 Authors: Andrea Mascioli, Carmel Serban, Nicole Landry, Matthews Do Carmo Nascimiento
