@@ -1,3 +1,14 @@
+---
+title: "Consolidated NEON Data Grab"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
 ```{r}
 #install.packages("neonUtilities")
 #install.packages("here")
@@ -6,6 +17,8 @@ library(tidyverse)
 library(neonUtilities)
 library(here)
 ```
+
+# Set NEON data products, sites, & dates
 ```{r}
 # Fish sampled
 water_fishes <- "DP1.20107.001"
@@ -30,6 +43,7 @@ end_date <- "2021-11"
 
 ```
 
+# Fish data download
 ```{r}
 
 list2env((loadByProduct(dpID = water_fishes, 
@@ -49,6 +63,7 @@ fsh_perFish %>%
   write_csv(here("data", "raw", "fsh_perFish.csv"))
 ```
 
+# Macroinvertebrate data download
 ```{r}
 list2env((loadByProduct(dpID = water_macroinvertebrates, 
                         site = my_sites, 
@@ -65,6 +80,7 @@ inv_taxonomyProcessed %>%
   write_csv(here("data", "raw", "inv_taxonomyProcessed.csv"))
 ```
 
+# Air temperature data download
 ```{r}
 list2env((loadByProduct(dpID = site_temperatures, 
                         site = my_sites, 
