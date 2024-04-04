@@ -1,4 +1,4 @@
-siteID,season,year,unique_taxa,total_individuals
+siteID,season,year,macro_unique_taxa,total_individuals
 BIGC,fall,2018,119,27166
 BIGC,fall,2019,115,27288
 BIGC,fall,2021,119,12001

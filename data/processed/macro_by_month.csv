@@ -1,4 +1,4 @@
-siteID,sample_month,unique_taxa,total_individuals
+siteID,sample_month,macro_unique_taxa,total_individuals
 BIGC,2018-05-01,112,2014
 BIGC,2018-07-01,121,33935
 BIGC,2018-09-01,119,27166
