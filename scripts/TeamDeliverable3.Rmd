@@ -59,7 +59,7 @@ Summarize fish diversity by month/year and season
 ```{r}
 fish_by_month <- fish_select %>% 
   group_by(siteID, sample_month) %>% 
-  summarize(unique_taxa = n_distinct(taxonID),
+  summarize(fish_unique_taxa = n_distinct(taxonID),
             total_individuals = n(),
             total_biomass = sum(fishWeight, na.rm = TRUE)) %>% 
   write_csv(., here("data", "processed", "fish_by_month.csv"))
@@ -69,7 +69,7 @@ print(fish_by_month)
 ## Summarize fish diversity by season 
 fish_by_season <- fish_select %>%
   group_by(siteID, season, year) %>%
-  summarize(unique_taxa = n_distinct(taxonID),
+  summarize(fish_unique_taxa = n_distinct(taxonID),
             total_individuals = n(),
             total_biomass = sum(fishWeight, na.rm = TRUE)) %>% 
   write_csv(., here("data", "processed", "fish_by_season.csv"))
@@ -97,7 +97,7 @@ macro_select <- macro_raw %>%
 ## Separate data to get macroinvertebrate data by month.
 macro_by_month <- macro_select %>% 
   group_by(siteID, sample_month) %>% 
-  summarize(unique_taxa = n_distinct(taxonID),
+  summarize(macro_unique_taxa = n_distinct(taxonID),
             total_individuals = sum(estimatedTotalCount)) %>% 
   write_csv(., here("data", "processed", "macro_by_month.csv"))
 
@@ -105,13 +105,36 @@ print(macro_by_month)
 
 macro_by_season <- macro_select %>%
   group_by(siteID, season, year) %>%
-  summarize(unique_taxa = n_distinct(taxonID),
+  summarize(macro_unique_taxa = n_distinct(taxonID),
             total_individuals = sum(estimatedTotalCount)) %>% 
   write_csv(., here("data", "processed", "macro_by_season.csv"))
 
 print(macro_by_season)
 
 ```
+
+## Join fish and macro 
+Join by siteID, season, and year to retain unique taxa for fish and macroinverts
+
+```{r}
+joined_data <- full_join((fish_by_season %>% 
+                            select(siteID:fish_unique_taxa)),
+                          (macro_by_season %>% 
+                            select(siteID:macro_unique_taxa)))
+
+head(joined_data)
+```
+
+Make a graph of fish as a function of inverts
+```{r}
+ggplot(joined_data,
+       aes(x = macro_unique_taxa,
+           y = fish_unique_taxa,
+           col = siteID)) +
+  geom_point(cex = 2) +
+  theme_bw()
+```
+
 
 # Data analysis
 
@@ -123,7 +146,7 @@ Use an ANOVA test to find correlation between unique species and season for each
 ```{r chunk 5}
 
 # Set up model
-unique_taxa_aov_macro <- aov(unique_taxa ~ season * siteID, data = macro_by_season)
+unique_taxa_aov_macro <- aov(macro_unique_taxa ~ season * siteID, data = macro_by_season)
 
 summary(unique_taxa_aov_macro)
 
@@ -132,7 +155,7 @@ par(mfrow = c(1, 3))
 plot(unique_taxa_aov_macro, which = 1:3)
 
 # Additive Model
-unique_taxa_aov2_macro <- aov(unique_taxa ~ season + siteID, data = macro_by_season)
+unique_taxa_aov2_macro <- aov(macro_unique_taxa ~ season + siteID, data = macro_by_season)
 
 summary(unique_taxa_aov2_macro)
 
@@ -146,7 +169,7 @@ The data above from the ANOVA test and Additive models show that the siteID's ha
 ## Fish ANOVA
 ```{r chunk 5}
 
-unique_taxa_aov_fish <- aov(unique_taxa ~ season * siteID, data = fish_by_season)
+unique_taxa_aov_fish <- aov(fish_unique_taxa ~ season * siteID, data = fish_by_season)
 
 summary(unique_taxa_aov_fish)
 
@@ -155,7 +178,7 @@ par(mfrow = c(1, 3))
 plot(unique_taxa_aov_fish, which = 1:3)
 
 # Additive Model
-unique_taxa_aov2_fish <- aov(unique_taxa ~ season + siteID, data = fish_by_season)
+unique_taxa_aov2_fish <- aov(fish_unique_taxa ~ season + siteID, data = fish_by_season)
 
 summary(unique_taxa_aov2_fish)
 
