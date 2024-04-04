@@ -129,10 +129,11 @@ Make a graph of fish as a function of inverts
 ```{r}
 ggplot(joined_data,
        aes(x = macro_unique_taxa,
-           y = fish_unique_taxa,
-           col = siteID)) +
-  geom_point(cex = 2) +
-  theme_bw()
+           y = fish_unique_taxa)) +
+  geom_point(cex = 2, aes(col = siteID)) +
+  theme_bw()+
+  geom_smooth()
+
 ```
 
 
