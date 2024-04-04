@@ -116,6 +116,9 @@ print(macro_by_season)
 # Data analysis
 
 ## Macroinvertebrate ANOVA
+
+**KF note: Here and for fish below, remember that ANOVA is testing for differences in mean values across groups, not correlation among variables!**
+
 Use an ANOVA test to find correlation between unique species and season for each site
 ```{r chunk 5}
 
