@@ -43,7 +43,7 @@ end_date <- NA #"2021-11"
 # Fish data download
 ```{r}
 list2env((loadByProduct(dpID = water_fishes, 
-                        site = my_sites, 
+                        #site = my_sites, 
                         include.provisional = TRUE,
                         startdate = start_date,
                         enddate = end_date)),
@@ -58,10 +58,15 @@ fsh_perFish %>%
   write_csv(here("data", "raw", "fsh_perFish.csv"))
 ```
 
+Extract the siteID for NEON sites that had any fish data available
+```{r}
+fish_sites <- unique(fsh_perFish$siteID)
+```
+
 # Macroinvertebrate data download
 ```{r}
 list2env((loadByProduct(dpID = water_macroinvertebrates, 
-                        site = my_sites, 
+                        site = fish_sites, 
                         include.provisional = TRUE,
                         startdate = start_date,
                         enddate = end_date)),
@@ -77,9 +82,10 @@ inv_taxonomyProcessed %>%
 ```
 
 # Water temperature data download
+Note that only sites that had fish data available ("fish_sites") are included in the data pull
 ```{r}
 list2env((loadByProduct(dpID = site_temperatures, 
-                        site = my_sites, 
+                        site = fish_sites, 
                         include.provisional = TRUE,
                         startdate = start_date,
                         enddate = end_date)),
