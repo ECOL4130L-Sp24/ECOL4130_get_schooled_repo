@@ -43,7 +43,7 @@ end_date <- NA #"2021-11"
 # Fish data download
 ```{r}
 list2env((loadByProduct(dpID = water_fishes, 
-                        site = my_sites, 
+                        #site = my_sites, 
                         include.provisional = TRUE,
                         startdate = start_date,
                         enddate = end_date)),
@@ -61,7 +61,7 @@ fsh_perFish %>%
 # Macroinvertebrate data download
 ```{r}
 list2env((loadByProduct(dpID = water_macroinvertebrates, 
-                        site = my_sites, 
+                        #site = my_sites, 
                         include.provisional = TRUE,
                         startdate = start_date,
                         enddate = end_date)),
