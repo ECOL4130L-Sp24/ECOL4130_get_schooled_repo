@@ -28,7 +28,7 @@ library(neonUtilities)
 fish_raw <- read_csv(here("data", "raw", "fsh_perFish.csv"))
 
 # Macroinvertebrates
-macro_raw <- read_csv(here("data", "raw", "inv_taxonomyProcessed.csv")) 
+#macro_raw <- read_csv(here("data", "raw", "inv_taxonomyProcessed.csv")) 
 
 # Stream temperature
 temp_raw <- read_csv(here("data", "raw", "TSW_30min.csv"))
@@ -82,24 +82,28 @@ print(fish_by_season)
 ```{r}
 
 ## Select focal variables
-macro_select <- macro_raw %>% 
-  mutate(taxonID = factor(acceptedTaxonID),
-         siteID = factor(siteID),
-         sample_month = as_date(floor_date(collectDate, "month")),
-         month = month(sample_month),
-         year = year(sample_month),
-         season = factor(ifelse(month %in% c(3,4,5), "spring",
-                         ifelse(month %in% c(6,7,8), "summer",
-                                ifelse(month %in% c(9,10,11), "fall", "winter"))))) %>% 
+#macro_select <- macro_raw %>% 
+#  mutate(taxonID = factor(acceptedTaxonID),
+#         siteID = factor(siteID),
+#         sample_month = as_date(floor_date(collectDate, "month")),
+#        month = month(sample_month),
+#         year = year(sample_month),
+#         season = factor(ifelse(month %in% c(3,4,5), "spring",
+#                         ifelse(month %in% c(6,7,8), "summer",
+#                                ifelse(month %in% c(9,10,11), "fall", #"winter"))))) %>% 
   #filter(season %in% c("spring", "fall")) %>% 
-  select(siteID, sample_month, month, year, season, genus, taxonID, scientificName, sizeClass, sizeCategory, individualCount, estimatedTotalCount)
+#  select(siteID, sample_month, month, year, season, genus, taxonID, #scientificName, sizeClass, sizeCategory, individualCount, #estimatedTotalCount)
 
 ## Separate data to get macroinvertebrate data by month.
-macro_by_month <- macro_select %>% 
-  group_by(siteID, sample_month) %>% 
-  summarize(macro_unique_taxa = n_distinct(taxonID),
-            total_individuals = sum(estimatedTotalCount)) %>% 
-  write_csv(., here("data", "processed", "macro_by_month.csv"))
+#macro_by_month <- macro_select %>% 
+#  group_by(siteID, sample_month) %>% 
+#  summarize(macro_unique_taxa = n_distinct(taxonID),
+#            total_individuals = sum(estimatedTotalCount)) %>% 
+#  write_csv(., here("data", "processed", "macro_by_month.csv"))
+
+
+# Directly import macro_by_month because large all-site raw data to big to import
+macro_by_month <- read_csv(here("data", "processed", "macro_by_month.csv"))
 
 print(macro_by_month)
 
