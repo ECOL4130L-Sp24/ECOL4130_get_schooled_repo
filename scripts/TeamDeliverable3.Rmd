@@ -203,7 +203,7 @@ The ANOVA test and Additive model reflect the same results as the macroinvertebr
 
 ggplot(macro_by_season,
        aes(x = season,
-           y = unique_taxa,
+           y = macro_unique_taxa,
            fill = siteID)) +
   geom_boxplot() +
   theme_bw()
@@ -216,7 +216,7 @@ The box plot above shows the data for the unique macroinvertebrate species colle
 
 ggplot(fish_by_season,
        aes(x = season,
-           y = unique_taxa,
+           y = fish_unique_taxa,
            fill = siteID)) +
   geom_boxplot() +
   facet_wrap(. ~ siteID, 
@@ -229,9 +229,9 @@ The box plot above shows the data for the unique fish species collected between 
 
 ```{r}
 # KF added: Unique taxa over time at each site (just for fun/if useful)
-ggplot(fish_by_month,
-       aes(x = sample_month,
-           y = unique_taxa,
+ggplot(joined_data,
+       aes(x = year,
+           y = fish_unique_taxa,
            col = siteID)) +
   geom_line() +
   facet_wrap(. ~ siteID, 
@@ -243,8 +243,8 @@ ggplot(fish_by_month,
 ```{r chunk 7}
 #Second graph with additional context
 ggplot() +
-  geom_point(data = fish_by_month, aes(x=sample_month, y=unique_taxa, colour = "Fish"))+
-  geom_point(data = macro_by_month, aes(x=sample_month, y=unique_taxa, colour = "Macroinvertebrates"))+
+  geom_point(data = fish_by_month, aes(x=sample_month, y=fish_unique_taxa, colour = "Fish"))+
+  geom_point(data = macro_by_month, aes(x=sample_month, y=macro_unique_taxa, colour = "Macroinvertebrates"))+
   theme_bw()+
   labs(x = "Month",
        y = "Number of different species")+
