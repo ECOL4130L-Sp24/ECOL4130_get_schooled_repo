@@ -143,7 +143,24 @@ ggplot(joined_data,
   theme_bw()
 
 ```
+DONT USE THIS ITS PEAHACKING
+```{r}
+graph_data <- joined_data %>% 
+  filter(fish_unique_taxa >= 11) %>% 
+  filter(fish_unique_taxa <= 30)
 
+ggplot(graph_data,
+       aes(x = macro_unique_taxa,
+           y = fish_unique_taxa)) +
+  geom_point(cex = 2, aes(col = siteID)) +
+  theme_bw()
+
+# Specify our linear model
+lmodel2 <- lm(macro_unique_taxa ~ fish_unique_taxa, data = graph_data)
+
+# Print regression output
+summary(lmodel2)
+```
 
 # Data analysis
 
