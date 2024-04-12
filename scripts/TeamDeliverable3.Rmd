@@ -240,6 +240,9 @@ ggplot(fish_by_season,
              scales = "free_y") +
   theme_bw()
 
+ggplot() +
+  geom_boxplot(data = fish_by_season, aes(x = season, y = fish_unique_taxa)) +
+  theme_bw()
 ```
 
 The box plot above shows the data for the unique fish species collected between both sites MAYF and BIGC. The y axis shows the number of unique taxa collected while the x axis shows the season. The blue bars show MAYF data while the orange/red bars show data for BIGC. The graphs havee been split to show the very low amount of BIGC fish collected when compared to MAYF. The BIGC fish species start low in the fall and spike in the spring, with no data to show for winter. The MAYF fish species show an opposite trend, with unique taxa collected being high in the fall and decrease in the spring and are lowest in the winter.
