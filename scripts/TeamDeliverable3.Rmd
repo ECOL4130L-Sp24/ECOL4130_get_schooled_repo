@@ -153,7 +153,7 @@ streams_to_test <- joined_data %>%
 ```
 
 ## Inverts as a function of fish
-Use Poisson regression model since data are counts (positive integers only)
+Use Poisson regression model since data are counts (positive integer values only)
 ```{r}
 
 mod1 <- glm(fish_unique_taxa ~ macro_unique_taxa * siteID * season, 
@@ -163,12 +163,13 @@ mod1 <- glm(fish_unique_taxa ~ macro_unique_taxa * siteID * season,
 # Test for overdispersion
 mod1$deviance / mod1$df.residual
 
-# No issue; interpret output
+# No overdispersion issue; interpret output
 summary(mod1)
 
 ```
+Interpretation: No sig. interactions between site, season, invert diversity; simplify to run as additive model
 
-No sig. interactions between site, season, invert diversity; simplify to run as additive model
+Additive model including macroinvert richness, siteID, season
 ```{r}
 
 mod2 <- glm(fish_unique_taxa ~ macro_unique_taxa + siteID + season, 
@@ -181,9 +182,9 @@ summary(mod2)
 
 ```
 Interpretation: We see site-specific differences in unique fish taxa, but macroinvert. taxon richness is not a significant predictor.
-We did not see significant differences in fish taxon richness between fall and spring seasons
+We did not see significant differences in fish taxon richness between fall and spring seasons. Note that all site significances are indicated as whether they are sig. different from ARIK (alphabetically first)
 
-Make a graph of fish as a function of inverts
+Make a graph of fish as a function of inverts across selected stream sites
 ```{r}
 ggplot(streams_to_test,
        aes(x = macro_unique_taxa,
@@ -201,11 +202,11 @@ ggplot(streams_to_test,
 
 **KF note: Here and for fish below, remember that ANOVA is testing for differences in mean values across groups, not correlation among variables!**
 
-Use an ANOVA test to find correlation between unique species and season for each site
+Use an ANOVA test to determine whether mean macro. taxon richness differed by season and/or site
 ```{r chunk 5}
 
 # Set up model
-unique_taxa_aov_macro <- aov(macro_unique_taxa ~ season * siteID, data = macro_by_season)
+unique_taxa_aov_macro <- aov(macro_unique_taxa ~ season * siteID, data = streams_to_test)
 
 summary(unique_taxa_aov_macro)
 
@@ -214,7 +215,7 @@ par(mfrow = c(1, 3))
 plot(unique_taxa_aov_macro, which = 1:3)
 
 # Additive Model
-unique_taxa_aov2_macro <- aov(macro_unique_taxa ~ season + siteID, data = macro_by_season)
+unique_taxa_aov2_macro <- aov(macro_unique_taxa ~ season + siteID, data = streams_to_test)
 
 summary(unique_taxa_aov2_macro)
 
@@ -223,12 +224,14 @@ par(mfrow = c(1, 3))
 plot(unique_taxa_aov2_macro, which = 1:3)
 
 ```
-The data above from the ANOVA test and Additive models show that the siteID's have a significant correlation among them, while season and season:siteID do not have significant correlation. Essentially, the trend we are seeing with seasons and the fluxuations of species diversity are consistant between sites. The p value for siteID was 7.39x10^-7, and the F value was 71.097.Relationship is non linear as displayed by the residuals vs fitted plot, Residuals are approximately normally distributed as seen in the q-q residuals plot, and the there is not a constant variation of residuals as displayed in the scale-location plot.
+Interpretation: There were significant differences in mean macroinvertebrate taxon richness between stream sites. There were not significant differences between fall and spring samplings. 
 
 ## Fish ANOVA
+
+Use an ANOVA test to determine whether mean fish richness differed by season and/or site
 ```{r chunk 5}
 
-unique_taxa_aov_fish <- aov(fish_unique_taxa ~ season * siteID, data = fish_by_season)
+unique_taxa_aov_fish <- aov(fish_unique_taxa ~ season * siteID, data = streams_to_test)
 
 summary(unique_taxa_aov_fish)
 
@@ -237,7 +240,7 @@ par(mfrow = c(1, 3))
 plot(unique_taxa_aov_fish, which = 1:3)
 
 # Additive Model
-unique_taxa_aov2_fish <- aov(fish_unique_taxa ~ season + siteID, data = fish_by_season)
+unique_taxa_aov2_fish <- aov(fish_unique_taxa ~ season + siteID, data = streams_to_test)
 
 summary(unique_taxa_aov2_fish)
 
@@ -245,53 +248,43 @@ summary(unique_taxa_aov2_fish)
 par(mfrow = c(1, 3))
 plot(unique_taxa_aov2_fish, which = 1:3)
 ```
-The ANOVA test and Additive model reflect the same results as the macroinvertebrate data, with siteID proving significant correlation within them. The p value is 4.37x10^-5 and the F value is 63.984. This data informs us that the fluxuations of species diversity are not only consistant between sites, but also across fish species and macroinvertebrate species, regardless of the site location and geography.Relationship is non linear as displayed by the residuals vs fitted plot, Residuals are not approximately normally distributed as seen in the q-q residuals plot, and the there is not a constant variation of residuals as displayed in the scale-location plot.
+As with macroinvertebrates, there were site-specific differences in fish diversity, but diversity did not differ between fall and spring samplings.
 
 
+Boxplot of macroinvertebrate richness across sites
+Season not included in plots because it was not significant in models
 ```{r chunk 6}
-# MACRO SITE GRAPH
 
-ggplot(macro_by_season,
-       aes(x = season,
+ggplot(streams_to_test,
+       aes(x = siteID,
            y = macro_unique_taxa,
            fill = siteID)) +
   geom_boxplot() +
+  scale_y_continuous(limits = c(0, 150)) +
   theme_bw()
 
 ```
-The box plot above shows the data for the unique macroinvertebrate species collected between both sites MAYF and BIGC. The y axis shows the number of unique taxa collected while the x axis shows the season. The blue bars show MAYF data while the orange/red bars show data for BIGC. The overall trend for both sites looks relatively similar, however the MAYF site does show a considerable less amount of unique macroinvertebrates collected.
 
+Boxplot of fish richness across sites
+Season not included in plots because it was not significant in models
 ```{r chunk 6}
-# FISH SITE GRAPH
-
-ggplot(fish_by_season,
-       aes(x = season,
+ggplot(streams_to_test,
+       aes(x = siteID,
            y = fish_unique_taxa,
            fill = siteID)) +
   geom_boxplot() +
-  facet_wrap(. ~ siteID, 
-             scales = "free_y") +
+  scale_y_continuous(limits = c(0, 35),
+                     breaks = seq(0, 35,5)) +
   theme_bw()
 
-ggplot() +
-  geom_boxplot(data = fish_by_season, aes(x = season, y = fish_unique_taxa)) +
-  theme_bw()
-```
-
-The box plot above shows the data for the unique fish species collected between both sites MAYF and BIGC. The y axis shows the number of unique taxa collected while the x axis shows the season. The blue bars show MAYF data while the orange/red bars show data for BIGC. The graphs havee been split to show the very low amount of BIGC fish collected when compared to MAYF. The BIGC fish species start low in the fall and spike in the spring, with no data to show for winter. The MAYF fish species show an opposite trend, with unique taxa collected being high in the fall and decrease in the spring and are lowest in the winter.
-
-```{r}
-# KF added: Unique taxa over time at each site (just for fun/if useful)
-ggplot(joined_data,
-       aes(x = year,
+# Cross-site patterns in fish taxon richness between fall/spring
+ggplot(data = streams_to_test, 
+       aes(x = season, 
            y = fish_unique_taxa,
-           col = siteID)) +
-  geom_line() +
-  facet_wrap(. ~ siteID, 
-             scales = "free_y") +
+           fill = season)) +
+  geom_boxplot() +
   theme_bw()
 ```
-
 
 ```{r chunk 7}
 #Second graph with additional context
