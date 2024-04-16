@@ -25,14 +25,15 @@ sites <- sites_all %>%
   arrange(field_site_id)
 
 ## List state names of your sites
-myStates <- as.character(sites$field_site_state)
+myStates <- c('California', 'Massachusetts', 'Kansas', 'Tennessee',
+              'Virginia', 'AL', 'UT', 'Colorado')
 
 ## Map your sites!
 # Highlight to run the chunk below all at once to avoid plotting errors
 par(oma=c(2,2,1,1), mar = c(0,0,0,0),mgp=c(0,0,0))
 maps::map('state', col='black', lwd=2) 
-#maps::map('state', region = myStates, add = T, fill=T, 
- #         col= 'tomato')  # Customize the fill color if you want!
+maps::map('state', region = myStates, add = T, fill=T, 
+         col= 'dodgerblue2')  # Customize the fill color if you want!
 points(sites$field_longitude, sites$field_latitude, 
        col='black', pch=16, cex=1.5,lwd=1)
 axis(1, at=seq(-124,-68, 8), padj=1.5, cex.axis=1)
