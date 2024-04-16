@@ -4,7 +4,7 @@
 library(tidyverse)
 library(here)
 
-#install.packages(maps)
+install.packages(maps)
 library(maps)
 
 ## Read in metadata for all NEON sites
