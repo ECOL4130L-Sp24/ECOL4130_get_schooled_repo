@@ -30,7 +30,7 @@ water_macroinvertebrates <- "DP1.20120.001"
 site_temperatures <- "DP1.20053.001"
 
 # Focal sites
-my_sites <- c("MAYF", "BIGC", "KING", "MCDI","TECR", "ARIK", "WLOU", "LECO", "WALK", "LEWI", "POSE", "CRAM", "LIRO")
+my_sites <- c("ARIK", "BIGC", "HOPB", "KING", "LECO", "LEWI", "MAYF", "MCDI", "POSE", "REDB", "WALK", "WLOU")
 
 # Start date (as YYYY-MM)
 start_date <- NA #"2020-01"
@@ -58,9 +58,13 @@ fsh_perFish %>%
   write_csv(here("data", "raw", "fsh_perFish.csv"))
 ```
 
-Extract the siteID for NEON sites that had any fish data available
+Extract the siteID and start/end dates for NEON sites that had any fish data available
 ```{r}
 fish_sites <- unique(fsh_perFish$siteID)
+
+fish_start <- "2016-03"
+
+fish_end <- "2024-02"
 ```
 
 # Macroinvertebrate data download
@@ -82,13 +86,15 @@ inv_taxonomyProcessed %>%
 ```
 
 # Water temperature data download
-Note that only sites that had fish data available ("fish_sites") are included in the data pull
+Note that only sites that had fish data available across multiple seasonal replicates are included in the temperature data pull to keep file size down
 ```{r}
+
 list2env((loadByProduct(dpID = site_temperatures, 
-                        site = fish_sites, 
-                        include.provisional = TRUE,
-                        startdate = start_date,
-                        enddate = end_date)),
+                        site = my_sites, 
+                        include.provisional = FALSE,
+                        startdate = fish_start,
+                        enddate = fish_end,
+                        tabl = "TSW_30min")),
          .GlobalEnv)
 ```
 ```{r}
@@ -98,3 +104,19 @@ variables_20053 %>%
 TSW_30min %>% 
   write_csv(here("data", "raw", "TSW_30min.csv"))
 ```
+
+## Summarize water temperature to seasonal mean
+Otherwise raw data file is too big to push to github
+```{r}
+TSW_30min_monthly_mean <- TSW_30min %>% 
+  mutate(date = as_date(floor_date(startDateTime, "month")),
+         month = month(date),
+         year = year(date)) %>%
+  drop_na(surfWaterTempMean) %>% 
+  group_by(domainID, siteID, horizontalPosition, verticalPosition, month, year) %>% 
+  summarize(mean_monthly_surfWaterTemp = mean(surfWaterTempMean),
+            sd_monthly_surfWaterTemp = sd(surfWaterTempMean)) %>% 
+  write_csv(here("data", "processed", "TSW_monthly_mean.csv"))
+
+```
+
