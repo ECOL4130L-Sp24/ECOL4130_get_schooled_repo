@@ -136,7 +136,7 @@ head(joined_data)
 
 How many complete observations per site were there?
 Which site/season combinations had multiple observations (e.g., across years)
-```{r}
+```{r sites_to_keep}
 site_season_summary <- joined_data %>% 
   group_by(siteID, season) %>% 
   summarize(obs = n())
@@ -147,10 +147,17 @@ keep <- c("ARIK", "BIGC", "HOPB", "KING", "LECO", "LEWI", "MAYF", "MCDI", "POSE"
 ```
 
 Retain only stream sites that had multiple observations per season across years; multiple seasons
-```{r}
+```{r filter_joined_data}
 streams_to_test <- joined_data %>% 
   filter(siteID %in% keep)
 ```
+
+Potential way to phrase site selection in your methods: 
+
+"We selected NEON sites to maximize the range of sites examined while ensuring sufficient replication for statistical analysis. We retained sites that had at least two sampling instances for fish and macroinvertebrates in both Fall and Spring seasons. This resulted in 12 total sites ranging from Alaksa (ARIK) to Alabama (MAYF) and California (BIGC) to Massachusetts (HOPB)."
+
+Sites selected: 
+"ARIK", "BIGC", "HOPB", "KING", "LECO", "LEWI", "MAYF", "MCDI", "POSE", "REDB", "WALK", "WLOU"
 
 ## Inverts as a function of fish
 Use Poisson regression model since data are counts (positive integer values only)
