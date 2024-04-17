@@ -44,7 +44,6 @@ text(sites$field_longitude, sites$field_latitude, sites$field_site_id,
      cex=1, font=2, 
      pos = c(1, 4, 4, 4, 3, 1, 1, 2, 1, 2, 1)) 
 # 1 = below; 2 = left; 3 = above; 4 = right
-
 # Notes: Alaska can't plot using this script! Omit site or just omit from map :)
 # You'll likely need to mess around with the pos = values to make site names
 # show up as legibly as possible; the order is alpha- by siteID (and will include
