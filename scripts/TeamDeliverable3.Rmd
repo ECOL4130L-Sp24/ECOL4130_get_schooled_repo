@@ -144,6 +144,9 @@ site_season_summary <- joined_data %>%
 site_season_summary
 
 keep <- c("ARIK", "BIGC", "HOPB", "KING", "LECO", "LEWI", "MAYF", "MCDI", "POSE", "REDB", "WALK", "WLOU")
+
+site_colors <- c("#F8766D", "#DE8C00", "#B79F00", "#7cae00", "#00BA38", "#00c08b",
+                 "#00bfc4", "#00b4f0", "#619cff", "#c77cff", "#f564e3", "#ff64b0")
 ```
 
 Retain only stream sites that had multiple observations per season across years; multiple seasons
@@ -187,16 +190,20 @@ mod2$deviance / mod2$df.residual
 
 summary(mod2)
 
+anova(mod2, test = "Chisq")
+
 ```
 Interpretation: We see site-specific differences in unique fish taxa, but macroinvert. taxon richness is not a significant predictor.
 We did not see significant differences in fish taxon richness between fall and spring seasons. Note that all site significances are indicated as whether they are sig. different from ARIK (alphabetically first)
+
 
 Make a graph of fish as a function of inverts across selected stream sites
 ```{r}
 ggplot(streams_to_test,
        aes(x = macro_unique_taxa,
-           y = fish_unique_taxa)) +
-  geom_point(cex = 2, aes(col = siteID)) +
+           y = fish_unique_taxa,
+           fill = siteID)) +
+  geom_point(cex = 4, pch = 21) +
   scale_x_continuous(limits = c(0, 150)) +
   scale_y_continuous(limits = c(0, 35),
                      breaks = seq(0, 35, 5)) +
@@ -229,6 +236,12 @@ summary(unique_taxa_aov2_macro)
 #Diagnostic Plots
 par(mfrow = c(1, 3))
 plot(unique_taxa_aov2_macro, which = 1:3)
+
+# Tukey test
+sig_outcomes <- as_tibble(tidy(TukeyHSD(unique_taxa_aov2_macro))) %>% 
+#as_tibble(tidy(unique_taxa_aov2_macro)) %>% 
+  filter(adj.p.value < .05)
+
 
 ```
 Interpretation: There were significant differences in mean macroinvertebrate taxon richness between stream sites. There were not significant differences between fall and spring samplings. 
@@ -263,11 +276,13 @@ Season not included in plots because it was not significant in models
 ```{r chunk 6}
 
 ggplot(streams_to_test,
-       aes(x = siteID,
+       aes(x = (fct_reorder(siteID, macro_unique_taxa, .fun = median)),
            y = macro_unique_taxa,
            fill = siteID)) +
   geom_boxplot() +
   scale_y_continuous(limits = c(0, 150)) +
+  labs(x = "NEON site ID") +
+  guides(fill = "none") +
   theme_bw()
 
 ```
@@ -276,12 +291,14 @@ Boxplot of fish richness across sites
 Season not included in plots because it was not significant in models
 ```{r chunk 6}
 ggplot(streams_to_test,
-       aes(x = siteID,
+       aes(x = (fct_reorder(siteID, fish_unique_taxa, .fun = median)),
            y = fish_unique_taxa,
            fill = siteID)) +
   geom_boxplot() +
   scale_y_continuous(limits = c(0, 35),
                      breaks = seq(0, 35,5)) +
+  labs(x = "NEON site ID") +
+  guides(fill = "none") +
   theme_bw()
 
 # Cross-site patterns in fish taxon richness between fall/spring
