@@ -239,8 +239,9 @@ plot(unique_taxa_aov2_macro, which = 1:3)
 
 # Tukey test
 sig_outcomes <- as_tibble(tidy(TukeyHSD(unique_taxa_aov2_macro))) %>% 
-#as_tibble(tidy(unique_taxa_aov2_macro)) %>% 
   filter(adj.p.value < .05)
+
+sig_outcomes
 
 
 ```
