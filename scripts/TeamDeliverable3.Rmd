@@ -18,6 +18,7 @@ Authors: Andrea Mascioli, Carmel Serban, Nicole Landry, Matthews Do Carmo Nascim
 ```{r chunk 1, message = FALSE}
 library(tidyverse)
 library(here)
+library(broom)
 ```
 
 ## Load raw datasets
