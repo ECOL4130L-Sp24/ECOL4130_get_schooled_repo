@@ -16,10 +16,10 @@ sites_all <- read_csv(here("data", "raw", "NEON_Field_Site_Metadata_20231026.csv
 # If typing manually, site names in all-caps inside quotation marks
 # e.g., mySites <- c('GRSM','HEAL','OSBS','SERC','TALL','TEAK')
 
-mySites <- c("BIGC", "HOPB", "KING", "LECO", "LEWI", "MAYF", "MCDI", 
-             "POSE", "REDB", "WALK", "WLOU")
+mySites <- c("ARIK", "BIGC", "HOPB", "KING", "LECO", "LEWI", 
+             "MAYF", "MCDI", "POSE", "REDB", "WALK", "WLOU")
 
-site_colors <- c("#DE8C00", "#B79F00", "#7cae00", "#00BA38", "#00c08b",
+site_colors <- c("#f8766D", "#DE8C00", "#B79F00", "#7cae00", "#00BA38", "#00c08b",
                  "#00bfc4", "#00b4f0", "#619cff", "#c77cff", "#f564e3", "#ff64b0")
 
 
@@ -29,8 +29,8 @@ sites <- sites_all %>%
   arrange(field_site_id)
 
 ## List state names of your sites
-myStates <- c('California', 'Massachusetts', 'Kansas', 'Tennessee',
-              'Virginia', 'AL', 'UT', 'Colorado')
+myStates <- c('Alabama', 'California', 'Colorado', 'Kansas', 'Massachusetts', 
+              'Tennessee', 'Utah', 'Virginia')
 
 ## Map your sites!
 # Highlight to run the chunk below all at once to avoid plotting errors
@@ -45,8 +45,8 @@ mtext("Longitude", 1, line=2.5, cex=1.25)
 axis(2, at=c(25,31, 37, 43, 49), las=2, hadj=1.75, cex.axis=1)
 mtext("Latitude", 2, line=2.5, cex=1.25)
 text(sites$field_longitude, sites$field_latitude, sites$field_site_id,
-     cex=1.5, font=2, 
-     pos = c(1, 4, 4, 4, 3, 1, 1, 2, 1, 2, 1),
+     cex=1.75, font=2, 
+     pos = c(3, 1, 4, 4, 4, 3, 1, 1, 2, 1, 2, 1),
      col = site_colors) 
 # 1 = below; 2 = left; 3 = above; 4 = right
 # Notes: Alaska can't plot using this script! Omit site or just omit from map :)
